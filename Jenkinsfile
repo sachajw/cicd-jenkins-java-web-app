@@ -7,7 +7,7 @@ pipeline {
         IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.substring(0, 7)}"
         DISCORD = credentials('pangarabbit-discord-jenkins')
         DEFAULT_CONTAINER = 'agent-jdk17'
-        PYTHON_CONTAINER = 'python39'
+        PYTHON_CONTAINER = 'jnlp-agent-python3'
         KANIKO_CONTAINER = 'kaniko'
     }
 
