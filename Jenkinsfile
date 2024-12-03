@@ -37,8 +37,8 @@ pipeline {
             steps {
                 container("${PYTHON_CONTAINER}") {
                     sh '''
-                        curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-                        python get-pip.py
+                        #curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+                        #python get-pip.py
                         pip install ortelius-cli
                         dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
 
