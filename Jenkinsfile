@@ -7,6 +7,7 @@ pipeline {
         IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.substring(0, 7)}"
         DISCORD = credentials('pangarabbit-discord-jenkins')
         DEFAULT_CONTAINER = 'agent-jdk17'
+        PYTHON_CONTAINER = 'python39'
         KANIKO_CONTAINER = 'kaniko'
     }
 
@@ -34,8 +35,10 @@ pipeline {
 
         stage('Ortelius') {
             steps {
-                container("${DEFAULT_CONTAINER}") {
+                container("${PYTHON_CONTAINER}") {
                     sh '''
+                        curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+                        python get-pip.py
                         pip install ortelius-cli
                         dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
 
