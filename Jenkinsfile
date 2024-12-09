@@ -27,7 +27,6 @@ pipeline {
                 }
             }
         }
-    }
 
         // stage('Surefire Report') {
         //     steps {
@@ -98,6 +97,7 @@ pipeline {
                 }
             }
         }
+    }
 
     //    stage('Ortelius') {
     //         steps {
