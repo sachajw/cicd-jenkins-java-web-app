@@ -23,15 +23,15 @@ pipeline {
             }
         }
 
-        // stage('Surefire Report') {
-        //     steps {
-        //         container("${JDK17_CONTAINER}") {
-        //             sh '''
-        //                 ./mvnw clean install site surefire-report:report -Dcheckstyle.skip=true
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Surefire Report') {
+            steps {
+                container("${JDK17_CONTAINER}") {
+                    sh '''
+                        ./mvnw clean install site surefire-report:report -Dcheckstyle.skip=true
+                    '''
+                }
+            }
+        }
 
         stage('Ortelius') {
             steps {
