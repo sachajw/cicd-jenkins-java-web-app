@@ -3,7 +3,7 @@ Application = 'GLOBAL.PangaRabbit.Jenkins Java Web App'
 Application_Version = '1.0.0'
 
 # Define Component Name, Variant and Version - required
-Name = 'GLOBAL.PangaRabbit.Jenkins Java WebApp'
+Name = 'GLOBAL.PangaRabbit.Jenkins Java Web App'
 Variant = '${GIT_BRANCH}'
 Version = 'v1.0.0.${BUILD_NUM}-g${SHORT_SHA}'
 
@@ -46,5 +46,5 @@ operator = ""                                               # Operator name
 Readme = ""                                                 # Readme file location in the Git Repo (DERIVED IF NOT SPECIFIED)
 ServiceOwner = '${DHUSER}'
 ServiceOwnerEmail = 'sacha@pangarabbit.com'
-ServiceOwnerPhone = ""                                      # Phone number for the Owner of the Service
+ServiceOwnerPhone = "911"                                      # Phone number for the Owner of the Service
 Swagger = ""                                                # Swagger/OpenApi file location in the Git Repo (DERIVED IF NOT SPECIFIED)
