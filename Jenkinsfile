@@ -51,7 +51,8 @@ pipeline {
                         // Step 2: Generate environment script
                         echo 'Generating environment script'
                         sh '''
-                            dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
+                            #dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
+                            dh --dhurl https://ortelius.pangarabbit.com --dhuser admin --dhpass admin envscript --envvars component.toml --envvars_sh dhenv.sh
                         '''
                     }
                 }
