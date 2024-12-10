@@ -9,10 +9,10 @@ pipeline {
         JDK17_CONTAINER = 'agent-jdk17'
         PYTHON_CONTAINER = 'python39'
         KANIKO_CONTAINER = 'kaniko'
-        DHUSER = credentials('dh-pangarabbit')
-        DHPASS = credentials('dh-pangarabbit')
+        DHUSER = 'admin' //credentials('dh-pangarabbit')
+        DHPASS = 'admin' //credentials('dh-pangarabbit')
         DHORG = "PangaRabbit"
-        DHPROJECT = "ortelius-jenkins-demo-app"
+        DHPROJECT = "ortelius-jenkins-java-web-app"
         DHURL = "https://ortelius.pangarabbit.com"
     }
 
