@@ -3,7 +3,7 @@ pipeline {
         label 'jenkins-jenkins-agent'
     }
     environment {
-        DOCKERREPO = 'quay.io/pangarabbit/ortelius-jenkins-demo-app'
+        DOCKERREPO = 'quay.io/pangarabbit/ortelius-jenkins-java-web-app'
         IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.substring(0, 7)}"
         DISCORD = credentials('pangarabbit-discord-jenkins')
         JDK17_CONTAINER = 'agent-jdk17'
@@ -13,7 +13,7 @@ pipeline {
         DHPASS = credentials('dh-pangarabbit')
         DHORG = "PangaRabbit"
         DHPROJECT = "ortelius-jenkins-demo-app"
-        DHURL = "https://console.deployhub.com"
+        DHURL = "https://ortelius.pangarabbit.com"
     }
 
     stages {
