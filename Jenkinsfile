@@ -43,6 +43,7 @@ pipeline {
                 container("${PYTHON_CONTAINER}") {
                     script {
                         sh '''
+                            git config --global --add safe.directory /home/jenkins/agent/workspace/t_ortelius-spring-petclinic_main
                             pip install ortelius-cli
                             #dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
                             dh --dhurl https://ortelius.pangarabbit.com --dhuser walle --dhpass Whimsical-Claim-Selective6 envscript --envvars component.toml --envvars_sh dhenv.sh
