@@ -11,7 +11,7 @@ pipeline {
         KANIKO_CONTAINER = 'kaniko'
         DHUSER = 'admin' //credentials('dh-pangarabbit')
         DHPASS = 'admin' //credentials('dh-pangarabbit')
-        DHORG = "PangaRabbit"
+        DHORG = 'PangaRabbit'
         DHPROJECT = 'ortelius-jenkins-java-web-app'
         DHURL = 'https://ortelius.pangarabbit.com'
     }
@@ -92,26 +92,6 @@ pipeline {
                         '''
                     }
                 }
-
-                container("${PYTHON_CONTAINER}") {
-                    script {
-                        // Step 5: Capture SBOM
-                        echo 'Capturing SBOM'
-                        sh '''
-                            . ${WORKSPACE}/dhenv.sh
-                            curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-                            ./syft packages ${DOCKERREPO}:${IMAGE_TAG} --scope all-layers -o cyclonedx-json > ${WORKSPACE}/cyclonedx.json
-                            cat ${WORKSPACE}/cyclonedx.json
-                        '''
-
-                        // Step 6: Create component with build data and SBOM
-                        echo 'Creating component with build data and SBOM'
-                        sh '''
-                            . ${WORKSPACE}/dhenv.sh
-                            dh updatecomp --rsp component.toml --deppkg "cyclonedx@${WORKSPACE}/cyclonedx.json"
-                        '''
-                    }
-                }
             }
         }
     }
@@ -145,7 +125,7 @@ pipeline {
                         result: currentBuild.currentResult,
                         title: env.JOB_NAME,
                         webhookURL: DISCORD
-                }
             }
         }
     }
+}
