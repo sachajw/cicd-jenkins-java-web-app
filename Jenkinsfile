@@ -45,7 +45,8 @@ pipeline {
                         sh '''
                             pip install ortelius-cli
                             #dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
-                            dh --dhurl https://ortelius.pangarabbit.com --dhuser admin --dhpass admin envscript --envvars component.toml --envvars_sh dhenv.sh
+                            #dh --dhurl https://ortelius.pangarabbit.com --dhuser admin --dhpass admin envscript --envvars component.toml --envvars_sh dhenv.sh
+                            dh --dhurl https://console.deployhub.com --dhuser stella99 --dhpass 123456 envscript --envvars component.toml --envvars_sh dhenv.sh
 
                             . ${WORKSPACE}/dhenv.sh
                             curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
