@@ -42,52 +42,30 @@ pipeline {
             steps {
                 container("${PYTHON_CONTAINER}") {
                     script {
-                        // Step 1: Install ortelius-cli
-                        echo 'Installing Ortelius CLI'
                         sh '''
                             pip install ortelius-cli
-                        '''
-
-                        // Step 2: Generate environment script
-                        echo 'Generating environment script'
-                        sh '''
                             #dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
                             dh --dhurl https://ortelius.pangarabbit.com --dhuser admin --dhpass admin envscript --envvars component.toml --envvars_sh dhenv.sh
-                        '''
 
-                        // Step 3: Capture SBOM
-                        echo 'Capturing SBOM'
-                        sh '''
                             . ${WORKSPACE}/dhenv.sh
                             curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
                             ./syft packages ${DOCKERREPO}:${IMAGE_TAG} --scope all-layers -o cyclonedx-json > ${WORKSPACE}/cyclonedx.json
                             cat ${WORKSPACE}/cyclonedx.json
-                        '''
 
-                        // Step 4: Create component with build data and SBOM
-                        echo 'Creating component with build data and SBOM'
-                        sh '''
                             . ${WORKSPACE}/dhenv.sh
                             dh updatecomp --rsp component.toml --deppkg "cyclonedx@${WORKSPACE}/cyclonedx.json"
-                        '''
+                           '''
                     }
                 }
 
                 container('kaniko') {
                     script {
-                        // Step 3: Build and push Docker image using Kaniko
-                        echo 'Building and pushing Docker image with Kaniko'
                         sh '''
                             . ${WORKSPACE}/dhenv.sh
                             /kaniko/executor \
                                 --context . \
                                 --dockerfile Dockerfile \
                                 --destination ${DOCKERREPO}:${IMAGE_TAG}
-                        '''
-
-                        // Step 4: Export Docker image digest
-                        echo 'Exporting Docker image digest'
-                        sh '''
                             echo export DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${DOCKERREPO}:${IMAGE_TAG} | cut -d: -f2 | cut -c-12) >> ${WORKSPACE}/dhenv.sh
                         '''
                     }
