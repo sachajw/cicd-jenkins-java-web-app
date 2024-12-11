@@ -12,8 +12,8 @@ pipeline {
         DHUSER = 'admin' //credentials('dh-pangarabbit')
         DHPASS = 'admin' //credentials('dh-pangarabbit')
         DHORG = "PangaRabbit"
-        DHPROJECT = "ortelius-jenkins-java-web-app"
-        DHURL = "https://ortelius.pangarabbit.com"
+        DHPROJECT = 'ortelius-jenkins-java-web-app'
+        DHURL = 'https://ortelius.pangarabbit.com'
     }
 
     stages {
@@ -53,6 +53,22 @@ pipeline {
                         sh '''
                             #dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
                             dh --dhurl https://ortelius.pangarabbit.com --dhuser admin --dhpass admin envscript --envvars component.toml --envvars_sh dhenv.sh
+                        '''
+
+                        // Step 3: Capture SBOM
+                        echo 'Capturing SBOM'
+                        sh '''
+                            . ${WORKSPACE}/dhenv.sh
+                            curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
+                            ./syft packages ${DOCKERREPO}:${IMAGE_TAG} --scope all-layers -o cyclonedx-json > ${WORKSPACE}/cyclonedx.json
+                            cat ${WORKSPACE}/cyclonedx.json
+                        '''
+
+                        // Step 4: Create component with build data and SBOM
+                        echo 'Creating component with build data and SBOM'
+                        sh '''
+                            . ${WORKSPACE}/dhenv.sh
+                            dh updatecomp --rsp component.toml --deppkg "cyclonedx@${WORKSPACE}/cyclonedx.json"
                         '''
                     }
                 }
@@ -99,39 +115,6 @@ pipeline {
             }
         }
     }
-
-    //    stage('Ortelius') {
-    //         steps {
-    //             container("${PYTHON_CONTAINER}") {
-    //                 sh '''
-    //                     #curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    //                     #python get-pip.py
-    //                     pip install ortelius-cli
-    //                     dh envscript --envvars component.toml --envvars_sh ${WORKSPACE}/dhenv.sh
-
-    //                     echo Logging into Docker
-    //                     echo ${DHPASS} | docker login -u ${DHUSER} --password-stdin ${DHURL}
-
-    //                     echo Building and Pushing Docker Image
-    //                     . ${WORKSPACE}/dhenv.sh
-    //                     docker build --tag ${DOCKERREPO}:${IMAGE_TAG} .
-    //                     docker push ${DOCKERREPO}:${IMAGE_TAG}
-    //                     echo export DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${DOCKERREPO}:${IMAGE_TAG} | cut -d: -f2 | cut -c-12) >> ${WORKSPACE}/dhenv.sh
-
-    //                     echo Capturing SBOM
-    //                     . ${WORKSPACE}/dhenv.sh
-    //                     curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-    //                     ./syft packages ${DOCKERREPO}:${IMAGE_TAG} --scope all-layers -o cyclonedx-json > ${WORKSPACE}/cyclonedx.json
-    //                     cat ${WORKSPACE}/cyclonedx.json
-
-    //                     echo Creating Component with Build Data and SBOM
-    //                     . ${WORKSPACE}/dhenv.sh
-    //                     dh updatecomp --rsp component.toml --deppkg "cyclonedx@${WORKSPACE}/cyclonedx.json"
-    //                 '''
-    //             }
-    //         }
-    //     }
-    // }
 
     post {
         success {
